@@ -1,17 +1,30 @@
 [BASIC]
-# 需爬取資訊 目標網址
+; 需爬取資訊 目標網址
 URL=https://www.example.com/
 
-# 設置 其他頁面網址格式 $URL$PAGE_FORMAT {}
-# 範例:
-# URL = https://www.example.com/
-# PAGE_FORMAT = page/{}/
-# 結果為 https://www.example.com/page/{num}/
+; 設置 其他頁面網址格式 $URL$PAGE_FORMAT {}
+; 範例:
+; URL = https://www.example.com/
+; PAGE_FORMAT = page/{}/
+; 結果為 https://www.example.com/page/{num}/
 PAGE_FORMAT=
 
+; 設置下載資料夾 預設為 download
+; DIR=
+
 [SELECTOR]
-# 取得最大頁數的 selector
+; 取得最大頁數的 selector
 LAST_PAGE_NUM_SELECTOR=
 
-# 取得項目的 selector
+; 取得項目的 selector
 ITEMS_SELECTOR=
+
+[LOG]
+; 關閉log
+; DISABLE_LOG=True
+
+; log資料夾 預設 logs
+; LOG_DIR=
+
+; 指定log等級 預設 WARNING
+; LOG_LEVEL=DEBUG

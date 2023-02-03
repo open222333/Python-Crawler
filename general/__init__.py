@@ -1,5 +1,6 @@
 from configparser import ConfigParser
 from datetime import datetime
+from logging.handlers import TimedRotatingFileHandler
 import logging
 import os
 
@@ -8,9 +9,17 @@ config = ConfigParser()
 config.read('config/config.ini')
 
 URL = config.get('BASIC', 'URL', fallback='')
+# 頁面網址格式 $URL$PAGE_FORMAT
 PAGE_FORMAT = config.get('BASIC', 'PAGE_FORMAT', fallback='')
-DEBUG = config.getboolean('BASIC', 'DEBUG', fallback=False)
-LOG_DIR = config.get('BASIC', 'LOG_DIR', fallback='log')
+
+DIR = config.get('BASIC', 'DIR', fallback='download')
+
+# log資料夾
+LOG_DIR = config.get('LOG', 'LOG_DIR', fallback='logs')
+# 關閉log
+DISABLE_LOG = config.get('LOG', 'DISABLE_LOG', fallback=False)
+# 指定log等級 預設debug
+LOG_LEVEL = config.get('LOG', 'LOG_LEVEL', fallback='WARNING')
 
 if not os.path.exists(LOG_DIR):
     os.makedirs(LOG_DIR)
@@ -22,9 +31,22 @@ ITEMS_SELECTOR = config.get('SELECTOR', 'ITEMS_SELECTOR', fallback='')
 log_file = f'{LOG_DIR}/{datetime.now().__format__("%Y%m%d")}.log'
 
 logger = logging.getLogger('main')
-log_handler = logging.FileHandler(log_file)
+
+if LOG_LEVEL == 'DEBUG':
+    logger.setLevel(logging.DEBUG)
+elif LOG_LEVEL == 'INFO':
+    logger.setLevel(logging.INFO)
+elif LOG_LEVEL == 'WARNING':
+    logger.setLevel(logging.WARNING)
+elif LOG_LEVEL == 'ERROR':
+    logger.setLevel(logging.ERROR)
+elif LOG_LEVEL == 'CRITICAL':
+    logger.setLevel(logging.CRITICAL)
+
+log_handler = TimedRotatingFileHandler(log_file, when='D', backupCount=7)
 log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 log_handler.setFormatter(log_format)
-if DEBUG:
-    log_handler.setLevel(logging.DEBUG)
 logger.addHandler(log_handler)
+
+if DISABLE_LOG:
+    logging.disable(logging.CRITICAL)
